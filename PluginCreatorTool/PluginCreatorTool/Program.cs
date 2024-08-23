@@ -1,14 +1,19 @@
-﻿string functionName = args[0];
+﻿using PluginCreatorTool;
+using PluginCreatorTool.Tasks;
 
-switch (functionName)
+string functionName = args[0];
+
+ICreatorTasks task = functionName switch
 {
-    case "addplugin":
-        Console.WriteLine("Adding plugin...");
-        break;
-    case "addfunction":
-        Console.WriteLine("Adding function...");
-        break;
-    default:
-        Console.WriteLine("Invalid function name.");
-        break;
+    "addplugin" => new PluginTask(),
+    "addfunction" => new FunctionTask(),
+    _ => null
+};
+
+if (task is null)
+{
+    Console.WriteLine("Invalid function name.");
+    return;
 }
+
+task.Create(TaskParameters.Parse(args[1..]));
